@@ -8,6 +8,25 @@ RUN dpkg --add-architecture i386 \
     && apt install -y --no-install-recommends winbind winehq-${WINE_BRANCH} \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt update && \
+    apt install -y --no-install-recommends \
+    # Calibre deps
+    ca-certificates \
+    curl \
+    gnupg2 \
+    xz-utils \
+    # QTWebEngine deps
+    libxdamage-dev libxrandr-dev libxtst6 \
+    # for kindle support
+    xvfb \
+    libegl1 \
+    libopengl0 \
+    libxkbcommon-x11-0 \
+    libxcomposite-dev \
+    # calibre 7
+    libxcb-cursor0 \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY kp3.reg /config/kp3.reg  
 
 RUN cd /config/ && curl -s -O https://d2bzeorukaqrvt.cloudfront.net/KindlePreviewerInstaller.exe \
