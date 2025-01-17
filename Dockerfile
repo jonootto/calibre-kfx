@@ -10,9 +10,9 @@ LABEL maintainer="aptalca"
 ENV \
   CUSTOM_PORT="8080" \
   CUSTOM_HTTPS_PORT="8181" \
-  #HOME="/config" \
   TITLE="Calibre" \
   QTWEBENGINE_DISABLE_SANDBOX="1"
+  
 
 RUN \
   echo "**** add icon ****" && \
@@ -111,7 +111,15 @@ RUN dpkg --add-architecture i386 \
     && rm -rf /var/lib/apt/lists/*
 
 
-
+# non-root user
+ARG USERNAME=calibre
+ARG USER_UID=1050
+ARG USER_GID=$USER_UID
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && chown -R $USERNAME:$USERNAME /app
+USER calibre
+ENV HOME=/home/calibre
 
 COPY --chown=$USERNAME:$USERNAME kp3.reg /home/$USERNAME/kp3.reg
 RUN cd /home/$USERNAME/ && curl -s -O https://d2bzeorukaqrvt.cloudfront.net/KindlePreviewerInstaller.exe \
