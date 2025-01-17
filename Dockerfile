@@ -41,11 +41,9 @@ RUN \
     python3-xdg \
     ttf-wqy-zenhei \
     wget \
-    xz-utils && \
-  apt-get install -y \
-    speech-dispatcher && \
-        # Calibre deps
     ca-certificates \
+    xz-utils  \
+    speech-dispatcher  \
     curl \
     gnupg2 \
     xz-utils \
@@ -75,7 +73,7 @@ RUN \
     libxcomposite-dev \
     apt-transport-https \
     # calibre 7
-    libxcb-cursor0 \
+    libxcb-cursor0 &&\
   echo "**** install calibre ****" && \
   mkdir -p \
     /opt/calibre && \
