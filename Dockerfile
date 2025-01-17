@@ -1,5 +1,4 @@
 FROM lscr.io/linuxserver/calibre:latest
-ARG WINE_BRANCH="stable"
 
 RUN apt update && \
     apt install -y --no-install-recommends \
@@ -16,16 +15,17 @@ RUN apt update && \
     libopengl0 \
     libxkbcommon-x11-0 \
     libxcomposite-dev \
+    apt-transport-https \
     # calibre 7
     libxcb-cursor0 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN dpkg --add-architecture i386 \
     && mkdir -pm755 /etc/apt/keyrings \
-    && curl -o /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key \
-    && curl -L -o /etc/apt/sources.list.d/winehq-bookworm.sources https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources \
+    && wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key -\
+    && wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources \
     && apt update \
-    && apt install -y --no-install-recommends winbind winehq-${WINE_BRANCH} \
+    && apt install -y --no-install-recommends winbind winehq-staging \
     && rm -rf /var/lib/apt/lists/*
 
 
