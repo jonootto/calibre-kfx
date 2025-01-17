@@ -108,23 +108,17 @@ RUN dpkg --add-architecture i386 \
     && wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources \
     && apt update \
     && apt install -y --no-install-recommends winbind winehq-staging \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir /home/calibre
 
+ENV \
+  HOME=/home/calibre \
+  XDG_RUNTIME_DIR=/home/calibre
 
-# non-root user
-ARG USERNAME=calibre
-ARG USER_UID=1050
-ARG USER_GID=$USER_UID
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && chown -R $USERNAME:$USERNAME /app
-USER calibre
-ENV HOME=/home/calibre
-
-COPY --chown=$USERNAME:$USERNAME kp3.reg /home/$USERNAME/kp3.reg
-RUN cd /home/$USERNAME/ && curl -s -O https://d2bzeorukaqrvt.cloudfront.net/KindlePreviewerInstaller.exe \
+COPY kp3.reg /home/calibre/kp3.reg
+RUN cd /home/calibre/ && curl -s -O https://d2bzeorukaqrvt.cloudfront.net/KindlePreviewerInstaller.exe \
     && DISPLAY=:0 WINEARCH=win64 WINEDEBUG=-all wine KindlePreviewerInstaller.exe /S \
-    && cat kp3.reg >> /home/$USERNAME/.wine/user.reg && rm *.exe && rm kp3.reg \
+    && cat kp3.reg >> /home/calibre/.wine/user.reg && rm *.exe && rm kp3.reg \
     && curl -s -O https://plugins.calibre-ebook.com/272407.zip \
     && calibre-customize -a 272407.zip \
     && curl -s -O https://plugins.calibre-ebook.com/291290.zip \
